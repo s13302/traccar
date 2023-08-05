@@ -1,0 +1,7 @@
+logs/*
+data/*
+config/*
+
+!logs/.gitkeep
+!data/.gitkeep
+!config/traccar.xml

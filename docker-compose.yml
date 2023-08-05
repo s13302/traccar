@@ -1,0 +1,36 @@
+version: "3.7"
+
+services:
+  traccar:
+    image: traccar/traccar:5.8
+    container_name: traccar
+    depends_on:
+      - traccar_db
+    restart: unless-stopped
+    ports:
+      - "8082:8082"
+      - "5000-5150:5000-5150"
+      - "5000-5150:5000-5150/udp"
+    volumes:
+      - "./logs:/opt/traccar/logs:rw"
+      - "./config/traccar.xml:/opt/traccar/conf/traccar.xml:ro"
+    networks:
+      - traccar-network
+
+  traccar_db:
+    image: postgres:12.8
+    container_name: traccar_db
+    restart: on-failure
+    environment:
+      - "POSTGRES_USER=postgres"
+      - "POSTGRES_PASSWORD=postgres"
+      - "POSTGRES_DB=traccar"
+      - "PGDATA=/var/lib/postgresql/pgdata/data"
+    volumes:
+      - "./data:/var/lib/postgresql/pgdata"
+    networks:
+      - traccar-network
+
+networks:
+  traccar-network:
+    driver: bridge
